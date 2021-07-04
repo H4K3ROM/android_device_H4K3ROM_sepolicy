@@ -1,28 +1,7 @@
-type updater_app, domain, coredomain;
+# Read updates from storage data
+r_dir_file(updater_app, mnt_user_file)
+r_dir_file(updater_app, storage_file)
 
-app_domain(updater_app)
-net_domain(updater_app)
-
-binder_call(updater_app, gpuservice)
-binder_call(updater_app, update_engine)
-
-allow updater_app app_api_service:service_manager find;
-allow updater_app recovery_service:service_manager find;
-allow updater_app system_api_service:service_manager find;
-allow updater_app update_engine_service:service_manager find;
-
-allow updater_app app_data_file:dir create_dir_perms;
-allow updater_app app_data_file:{ file lnk_file } create_file_perms;
-
-allow updater_app cache_file:dir r_dir_perms;
-
-allow updater_app cache_recovery_file:dir rw_dir_perms;
-allow updater_app cache_recovery_file:file create_file_perms;
-
-allow updater_app ota_package_file:dir create_dir_perms;
-allow updater_app ota_package_file:file create_file_perms;
-
-get_prop(updater_app, default_prop)
-get_prop(updater_app, exported2_default_prop)
-
-set_prop(updater_app, recovery_update_prop)
+# Allow to install OTA's from local storage
+allow updater_app backuptool:process noatsecure;
+allow updater_app media_rw_data_file:file { open read write getattr };
